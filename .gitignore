@@ -1,0 +1,60 @@
+# ==========================================
+# 1. Frontend (Next.js / Node)
+# ==========================================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.vercel
+frontend/.turbo
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# ==========================================
+# 2. Backend (FastAPI / Python)
+# ==========================================
+# Byte-compiled / optimized / DLL files
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+
+# Virtual Environments
+backend/venv/
+backend/.venv/
+backend/env/
+backend/ENV/
+
+# Testing / Coverage
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+
+# Distribution / Build
+backend/dist/
+backend/build/
+backend/*.egg-info/
+
+# ==========================================
+# 3. Environment Variables (SENSITIVE)
+# ==========================================
+# Never commit actual secrets to Git!
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+frontend/.env.local
+backend/.env
+
+# ==========================================
+# 4. OS & IDE Specific
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
