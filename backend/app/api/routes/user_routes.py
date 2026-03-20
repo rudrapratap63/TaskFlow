@@ -5,6 +5,7 @@ from app.api.deps import get_db
 from app.schemas.user_schema import UserCreate, LoginRequest, UserResponse, Token
 from app.crud.user_crud import check_user_exist, create_user
 from app.core.security import create_access_token
+from app.utils.hash import verify_password
 
 router = APIRouter(
     prefix="/users",
@@ -20,16 +21,19 @@ async def signup(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
 @router.post("/signin", response_model=Token)
 async def signin(user: LoginRequest, db: AsyncSession = Depends(get_db)):
-    is_user_exist = await check_user_exist(db, user)
+    user_exist = await check_user_exist(db, user)
 
-    if not is_user_exist:
+    if not user_exist:
         raise HTTPException(404, detail="User not found")
+    
+    if not verify_password(user.password, hash_password=user_exist.password):
+        raise HTTPException(401, detail="Incorrect Password")
     
     access_token = create_access_token(
         data={
-            "id": is_user_exist.id,
-            "email": is_user_exist.email,
-            "username": is_user_exist.username 
+            "id": user_exist.id,
+            "email": user_exist.email,
+            "username": user_exist.username 
         }
     )
 
