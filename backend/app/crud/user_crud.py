@@ -1,12 +1,12 @@
-from sqlalchemy import or_
-from sqlalchemy.orm import Session
+from sqlalchemy import or_, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.user_schema import UserCreate
-from backend.app.db import models
-from backend.app.utils.hash import hash_password
+from app.schemas.user_schema import LoginRequest, UserCreate
+from app.db import models
+from app.utils.hash import hash_password
 
 
-def create_user(db: Session, user: UserCreate):
+async def create_user(db: AsyncSession, user: UserCreate):
     hash_pwd = hash_password(user.password)
     new_user = models.User(
         name = user.name,
@@ -16,15 +16,24 @@ def create_user(db: Session, user: UserCreate):
     )
 
     db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    await db.commit()
+    await db.refresh(new_user)
 
     return new_user
 
-def check_user_exist(db: Session, user: UserCreate):
-    return db.query(models.User).filter(
-        or_(
-            models.User.email == user.email,
-            models.User.username == user.username
+async def check_user_exist(db: AsyncSession, user: UserCreate | LoginRequest):
+
+    if isinstance(user, UserCreate):
+        stmt = select(models.User).where(
+            or_(
+                models.User.email == user.email,
+                models.User.username == user.username
+            )
         )
-    ).first()
+    else:
+        stmt = select(models.User).where(models.User.email == user.email)
+
+    result = await db.execute(stmt)
+
+    users = result.scalars().first()
+    return users
