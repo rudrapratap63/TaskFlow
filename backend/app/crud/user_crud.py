@@ -1,3 +1,4 @@
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.schemas.user_schema import UserCreate
@@ -19,3 +20,11 @@ def create_user(db: Session, user: UserCreate):
     db.refresh(new_user)
 
     return new_user
+
+def check_user_exist(db: Session, user: UserCreate):
+    return db.query(models.User).filter(
+        or_(
+            models.User.email == user.email,
+            models.User.username == user.username
+        )
+    ).first()
