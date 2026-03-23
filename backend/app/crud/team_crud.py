@@ -63,3 +63,30 @@ async def change_team_name(team_id: int, new_name: str, db: AsyncSession, user_i
         await db.refresh(team)
     
     return team
+
+async def add_team_member(
+        team_id: int, 
+        db: AsyncSession, 
+        user_id: int,
+        new_user_id: int,
+    ):
+    stmt = select(UserTeams).where(
+        UserTeams.user_id == user_id,
+        UserTeams.team_id == team_id,
+        UserTeams.role == UserRole.ADMIN
+    )
+
+    result = await db.execute(stmt)
+    if not result.scalars().first():
+        return None
+    
+    new_user_team = UserTeams(
+        user_id=new_user_id,
+        team_id= team_id,
+        role=UserRole.MEMBER
+    )
+    db.add(new_user_team)
+    await db.commit()
+    await db.refresh(new_user_team)
+
+    return new_user_team

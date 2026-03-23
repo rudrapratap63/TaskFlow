@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_db, get_current_user
 from app.schemas.team_schema import TeamCreate, TeamResponse, TeamUpdate
-from app.crud.team_crud import change_team_name, create_new_team, get_all_teams, get_user_teams
+from app.crud.team_crud import add_team_member, change_team_name, create_new_team, get_all_teams, get_user_teams
 from app.db.models import User
 
 router = APIRouter(
@@ -49,3 +49,25 @@ async def change_name(
         )
     
     return team_updated
+
+@router.post("/invite-member")
+async def add_new_team_member(
+    team_id: int,
+    new_user_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    added_user_team = await add_team_member(
+        team_id=team_id,
+        db=db,
+        user_id=current_user.id,
+        new_user_id=new_user_id
+    )
+
+    if not added_user_team:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found or User is not admin"
+        )
+
+    return added_user_team
