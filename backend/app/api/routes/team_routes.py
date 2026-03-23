@@ -37,7 +37,7 @@ async def change_name(
 ):
     team_updated = await change_team_name(
         team_id=team_id,
-        new_name=team_in.name,
+        new_name=team_in.name, # type: ignore
         db=db,
         user_id=current_user.id
     )
