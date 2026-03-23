@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, or_, select, update
-from app.db.models import Team, UserTeams, UserRole
+from app.db.models import Team, UserTeams, UserRole, User
 from app.schemas.team_schema import TeamCreate
 
 async def create_new_team(db: AsyncSession, team_in: TeamCreate, user_id: int):
@@ -90,3 +90,15 @@ async def add_team_member(
     await db.refresh(new_user_team)
 
     return new_user_team
+
+async def get_team_members(db: AsyncSession, team_id: int, skip: int = 0, limit: int = 100):
+    query = (
+        select(User, UserTeams.role)
+        .join(UserTeams, UserTeams.user_id == User.id)
+        .where(UserTeams.team_id == team_id)
+        .offset(skip)
+        .limit(limit)
+    )
+    result = await db.execute(query)
+    # Return list of (User, role)
+    return result.all()

@@ -2,8 +2,8 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_db, get_current_user
-from app.schemas.team_schema import TeamCreate, TeamResponse, TeamUpdate
-from app.crud.team_crud import add_team_member, change_team_name, create_new_team, get_all_teams, get_user_teams
+from app.schemas.team_schema import TeamCreate, TeamResponse, TeamUpdate, TeamMemberResponse
+from app.crud.team_crud import add_team_member, change_team_name, create_new_team, get_all_teams, get_user_teams, get_team_members
 from app.db.models import User
 
 router = APIRouter(
@@ -71,3 +71,23 @@ async def add_new_team_member(
         )
 
     return added_user_team
+
+@router.get("/{team_id}/members", response_model=List[TeamMemberResponse])
+async def read_team_members(
+    team_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    skip: int = 0,
+    limit: int = 100
+):
+    members = await get_team_members(db=db, team_id=team_id, skip=skip, limit=limit)
+    return [
+        TeamMemberResponse(
+            id=user.id,
+            username=user.username,
+            email=user.email,
+            name=user.name,
+            role=role
+        )
+        for user, role in members
+    ]

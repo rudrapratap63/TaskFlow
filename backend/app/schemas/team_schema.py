@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
+from app.schemas.user_schema import UserResponse
+from app.db.models import UserRole
 
 class TeamBase(BaseModel):
     name: str
@@ -17,3 +19,6 @@ class TeamResponse(TeamBase):
     updated_at: datetime
     
     model_config = ConfigDict(from_attributes=True)
+
+class TeamMemberResponse(UserResponse):
+    role: UserRole
