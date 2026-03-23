@@ -1,7 +1,22 @@
 from fastapi import FastAPI
 from app.db.database import Base, engine
 from app.api.routes import user_routes, team_routes, project_routes, task_routes, comment_routes
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 async def init_tables():
