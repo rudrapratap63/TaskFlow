@@ -23,6 +23,10 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Logic to redirect to login or refresh token
       console.error("Unauthorized! Redirecting...");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }
