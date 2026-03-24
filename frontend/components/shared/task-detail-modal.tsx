@@ -95,7 +95,7 @@ export function TaskDetailModal({ task, open, onOpenChange }: TaskDetailModalPro
 
           {/* Comments Sidebar */}
           <div className="col-span-2 bg-muted/10 pr-5">
-             <TaskComments taskId={task.id} />
+             <TaskComments taskId={task.id} projectId={task.project_id} />
           </div>
         </div>
       </DialogContent>
