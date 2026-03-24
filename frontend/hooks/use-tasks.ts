@@ -69,3 +69,25 @@ export function useUpdateTaskStatus() {
     },
   })
 }
+
+export function useUpdateTask() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({
+      taskId,
+      data,
+    }: {
+      taskId: number
+      data: Partial<Omit<Task, "id" | "created_at" | "updated_at">>
+    }) => {
+      const response = await api.patch(`/tasks/${taskId}`, data)
+      return response.data
+    },
+    onSuccess: (data: Task) => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", "project", data.project_id] })
+      queryClient.invalidateQueries({ queryKey: ["tasks", "assigned"] })
+      // Also invalidate the specific task query if you have one
+      queryClient.invalidateQueries({ queryKey: ["task", data.id] })
+    },
+  })
+}

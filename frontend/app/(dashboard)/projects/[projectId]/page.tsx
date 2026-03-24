@@ -28,7 +28,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ projec
           <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
           <p className="text-muted-foreground">Project Board</p>
         </div>
-        <CreateTaskModal projectId={projectId} />
+        <CreateTaskModal projectId={projectId} teamId={project.team_id} />
       </div>
 
       <div className="flex-1 min-h-0">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useTask, useUpdateTaskStatus, TaskStatusType } from "@/hooks/use-tasks"
+import { useUpdateTaskStatus, TaskStatusType } from "@/hooks/use-tasks"
 import { Badge } from "@/components/ui/badge"
 import {
   Select,
@@ -19,7 +19,7 @@ export function TaskStatusSelect({ taskId, currentStatus }: { taskId: number, cu
       onValueChange={(value) => updateStatus({ taskId, status: value as TaskStatusType })}
       disabled={isPending}
     >
-      <SelectTrigger className="w-[140px] h-8 text-xs">
+      <SelectTrigger className="w-35 h-8 text-xs">
         <SelectValue placeholder="Status" />
       </SelectTrigger>
       <SelectContent>

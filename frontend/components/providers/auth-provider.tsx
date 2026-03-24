@@ -3,7 +3,6 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import api from "@/lib/axios"
-import { UserResponse } from "@/types/api-generated" // I'll use a local interface to keep types clear if this isn't exporting properly
 
 interface AuthContextType {
   user: any | null

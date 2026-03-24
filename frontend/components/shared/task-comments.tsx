@@ -80,7 +80,7 @@ export function TaskComments({ taskId }: { taskId: number }) {
           placeholder="Add a comment..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          className="min-h-[80px]"
+          className="min-h-20"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();

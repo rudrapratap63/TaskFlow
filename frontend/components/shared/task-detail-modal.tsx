@@ -6,6 +6,7 @@ import api from "@/lib/axios"
 import { Task, TaskStatusType } from "@/hooks/use-tasks"
 import { TaskComments } from "@/components/shared/task-comments"
 import { TaskStatusSelect } from "@/components/shared/task-status-select"
+import { TaskAssigneeSelect } from "@/components/shared/task-assignee-select"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -42,10 +43,10 @@ export function TaskDetailModal({ task, open, onOpenChange }: TaskDetailModalPro
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl h-[80vh] flex flex-col p-0 overflow-hidden gap-0">
-        <div className="grid grid-cols-3 h-full">
+      <DialogContent className="max-w-4xl h-[80vh] sm:max-w-2xl flex flex-col p-0 overflow-hidden gap-0">
+        <div className="grid grid-cols-5 h-full">
           {/* Main Info */}
-          <div className="col-span-2 p-6 flex flex-col h-full overflow-y-auto">
+          <div className="col-span-3 p-6 flex flex-col h-full overflow-y-auto">
             <DialogHeader className="mb-6">
               <div className="flex items-center justify-between mb-4">
                 <DialogTitle className="text-2xl">{task.title}</DialogTitle>
@@ -72,7 +73,11 @@ export function TaskDetailModal({ task, open, onOpenChange }: TaskDetailModalPro
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <UserIcon className="h-4 w-4" />
-                  {task.assigned_user_id ? `Assigned to User ${task.assigned_user_id}` : "Unassigned"}
+                  <TaskAssigneeSelect
+                    taskId={task.id}
+                    projectId={task.project_id}
+                    currentAssigneeId={task.assigned_user_id}
+                  />
                 </div>
               </div>
             </div>
@@ -89,7 +94,7 @@ export function TaskDetailModal({ task, open, onOpenChange }: TaskDetailModalPro
           </div>
 
           {/* Comments Sidebar */}
-          <div className="col-span-1 bg-muted/10">
+          <div className="col-span-2 bg-muted/10 pr-5">
              <TaskComments taskId={task.id} />
           </div>
         </div>
